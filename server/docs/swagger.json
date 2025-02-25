@@ -42,6 +42,12 @@
                         "in": "formData"
                     },
                     {
+                        "type": "file",
+                        "description": "JSON-Model file for template (only required for template, will be used if model key is not provided)",
+                        "name": "modelFile",
+                        "in": "formData"
+                    },
+                    {
                         "type": "string",
                         "description": "Template engine to use for template (only required for template)",
                         "name": "templateEngine",

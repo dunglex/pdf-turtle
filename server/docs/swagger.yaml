@@ -141,6 +141,10 @@ paths:
         in: formData
         name: model
         type: string
+      - description: JSON-Model file for template (only required for template, will be used if model key is not provided)
+        in: formData
+        name: modelFile
+        type: file
       - description: Template engine to use for template (only required for template)
         in: formData
         name: templateEngine

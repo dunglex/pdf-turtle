@@ -15,6 +15,7 @@ import (
 const (
 	formDataKeyBundle         = "bundle"
 	formDataKeyModel          = "model"
+	formDataKeyModelFile      = "modelFile"
 	formDataKeyTemplateEngine = "templateEngine"
 )
 
@@ -74,12 +75,11 @@ func RenderBundleHandler(c *fiber.Ctx) error {
 	pdfService := pdf.NewPdfService(ctx)
 
 	jsonModel := ""
-	// read json model from form value
 	jsonModel, _ = getValueFromForm(form.Value, formDataKeyModel)
 
 	// if form value is empty, read from form file
 	if jsonModel == "" {
-		modelsFromForm, ok := form.File[formDataKeyModel]
+		modelsFromForm, ok := form.File[formDataKeyModelFile]
 		if ok && len(modelsFromForm) > 0 {
 			modelFile := modelsFromForm[0]
 			reader, err := modelFile.Open()
