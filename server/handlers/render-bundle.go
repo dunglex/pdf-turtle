@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"bytes"
 	"errors"
+	"io"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -71,7 +73,28 @@ func RenderBundleHandler(c *fiber.Ctx) error {
 
 	pdfService := pdf.NewPdfService(ctx)
 
-	jsonModel, _ := getValueFromForm(form.Value, formDataKeyModel)
+	jsonModel := ""
+	// read json model from form value
+	jsonModel, _ = getValueFromForm(form.Value, formDataKeyModel)
+
+	// if form value is empty, read from form file
+	if jsonModel == "" {
+		modelsFromForm, ok := form.File[formDataKeyModel]
+		if ok && len(modelsFromForm) > 0 {
+			modelFile := modelsFromForm[0]
+			reader, err := modelFile.Open()
+			if err == nil {
+				defer reader.Close()
+				var buf bytes.Buffer
+				_, err = io.Copy(&buf, reader)
+				if err == nil {
+					jsonModel = buf.String()
+				}
+				buf = bytes.Buffer{}
+			}
+		}
+	}
+
 	templateEngine, _ := getValueFromForm(form.Value, formDataKeyTemplateEngine)
 
 	pdfData, errRender := pdfService.PdfFromBundle(bundle, jsonModel, templateEngine)
